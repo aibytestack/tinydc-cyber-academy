@@ -1,0 +1,150 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ * 
+ * Tiny DC Cyber Academy - Operational Missions
+ */
+
+import { Mission } from '../types/academy.ts';
+
+export const MISSIONS: Mission[] = [
+  {
+    id: 'm-01',
+    title: 'Mission 01: Hostname & Interface Reconnaissance',
+    slug: 'interface-recon',
+    category: 'systems',
+    difficulty: 'beginner',
+    durationMinutes: 15,
+    requiredSkills: ['Linux Basics', 'Terminal Navigation'],
+    xpReward: 150,
+    description: 'Query the target Linux server to determine its network interfaces, local IP address, and default gateway.',
+    briefing: 'A newly provisioned server in Rack A has joined the internal management network. You must run terminal discovery commands to verify its configuration matches datacenter policy.',
+    objectives: [
+      'Query hostname using hostname or cat /etc/hostname',
+      'Inspect IP addresses using ip addr or ifconfig',
+      'Verify the default gateway points to 10.0.0.1',
+    ],
+    verificationSteps: [
+      'Run: hostname',
+      'Run: cat /etc/resolv.conf',
+    ],
+    hint: 'Use the `hostname` and `cat /etc/resolv.conf` commands in the terminal.',
+    isCompleted: false,
+  },
+  {
+    id: 'm-02',
+    title: 'Mission 02: SSH Hardening & Key Authentication',
+    slug: 'ssh-hardening',
+    category: 'cybersecurity',
+    difficulty: 'intermediate',
+    durationMinutes: 25,
+    requiredSkills: ['SSH', 'Public-Key Cryptography', 'Linux Admin'],
+    xpReward: 300,
+    description: 'Audit the SSH server configuration, disable password logins, and enforce ED25519 public key authentication.',
+    briefing: 'Automated brute-force bots have been scanning port 22 on external gateway nodes. You must disable PasswordAuthentication in /etc/ssh/sshd_config and verify key-only access.',
+    objectives: [
+      'Generate an ED25519 SSH keypair',
+      'Verify authorized_keys permissions are set to 0600',
+      'Ensure PasswordAuthentication is set to no in sshd configuration',
+    ],
+    verificationSteps: [
+      'Verify key exists in ~/.ssh/id_ed25519',
+      'Check sshd_config for PasswordAuthentication no',
+    ],
+    hint: 'ED25519 keys are generated with `ssh-keygen -t ed25519 -C "operator@tinydc"`',
+    isCompleted: false,
+  },
+  {
+    id: 'm-03',
+    title: 'Mission 03: SQL Injection Vulnerability Mitigation',
+    slug: 'sqli-mitigation',
+    category: 'cybersecurity',
+    difficulty: 'intermediate',
+    durationMinutes: 30,
+    requiredSkills: ['SQL', 'Input Sanitization', 'Secure Coding'],
+    xpReward: 350,
+    description: 'Refactor a vulnerable authentication query that uses raw string concatenation into a safe parameterized query.',
+    briefing: 'Security audits flagged an endpoint executing `SELECT * FROM users WHERE user = \'\' + input + \'\'`. An attacker entered `admin\' OR \'1\'=\'1`, bypassing password checks. Refactor it using parameterized placeholders.',
+    objectives: [
+      'Understand how quotes and boolean tautologies break raw SQL queries',
+      'Replace string interpolation with query parameters (?)',
+      'Verify inputs with malicious characters are treated as literal strings',
+    ],
+    verificationSteps: [
+      'Run query with payload "admin\' OR \'1\'=\'1"',
+      'Verify zero unauthorized records returned',
+    ],
+    hint: 'Never concatenate user input directly into SQL strings. Always use prepared statements with parameter placeholders.',
+    isCompleted: false,
+  },
+  {
+    id: 'm-04',
+    title: 'Mission 04: Visual Network Routing & Gateway Recovery',
+    slug: 'network-routing',
+    category: 'networking',
+    difficulty: 'intermediate',
+    durationMinutes: 25,
+    requiredSkills: ['Subnets', 'Gateways', 'Routing Tables'],
+    xpReward: 300,
+    description: 'Diagnose why nodes in Subnet 10.0.2.0/24 cannot reach the DNS server in Subnet 10.0.0.0/24 and repair the route.',
+    briefing: 'GPU Compute nodes in Rack C report intermittent connectivity drops. The router interface IP was inadvertently changed during a switch reboot. Re-assign the correct gateway in the visual network simulator.',
+    objectives: [
+      'Inspect the visual network topology',
+      'Identify the disconnected interface between Switch C and Router Core',
+      'Send a packet ping trace and verify hop latency under 2ms',
+    ],
+    verificationSteps: [
+      'Connect link between Switch-C and Core-Router',
+      'Execute ping trace to 10.0.0.2',
+    ],
+    hint: 'Open the Network Simulator, select Switch C, and wire its uplink port to Core Router Port 2.',
+    isCompleted: false,
+  },
+  {
+    id: 'm-05',
+    title: 'Mission 05: CUDA Out-Of-Memory Triage & Quantization',
+    slug: 'cuda-oom-triage',
+    category: 'ai_engineering',
+    difficulty: 'advanced',
+    durationMinutes: 30,
+    requiredSkills: ['GPU Engineering', 'LLM Inference', 'Quantization'],
+    xpReward: 450,
+    description: 'Diagnose an out-of-memory crash when serving a 70B parameter model on a dual 24GB GPU workstation and configure Q4_K_M quantization.',
+    briefing: 'A researcher attempted to run LLaMA-3 70B at FP16 (requiring ~140GB VRAM) on two RTX 4090 GPUs (48GB total VRAM). The process threw `torch.cuda.OutOfMemoryError`. Use the VRAM calculator to select an optimal quantization and context window size.',
+    objectives: [
+      'Calculate precise memory footprint for 70B at FP16 vs Q4_K_M',
+      'Account for KV cache memory at 4096 tokens',
+      'Deploy the model with 4-bit weights fitting inside the 48GB pool',
+    ],
+    verificationSteps: [
+      'Target VRAM: 48 GB',
+      'Set precision: Q4_K_M',
+      'Confirm VRAM utilization < 42 GB (with headroom)',
+    ],
+    hint: '70B parameters at 4 bits (Q4_K_M) requires only ~38 GB total VRAM including activations and KV cache.',
+    isCompleted: false,
+  },
+  {
+    id: 'm-06',
+    title: 'Mission 06: Data Center Rack Outage Rapid Response',
+    slug: 'datacenter-outage',
+    category: 'infrastructure',
+    difficulty: 'advanced',
+    durationMinutes: 35,
+    requiredSkills: ['Server Engineering', 'Disaster Recovery', 'ZFS Backups'],
+    xpReward: 500,
+    description: 'Investigate a critical alert in Rack D where NVMe wear thresholds triggered a storage pool read-only lock.',
+    briefing: 'The primary backup vault reported I/O timeouts. The ZFS pool `zfs-backup-pool` entered a DEGRADED state after Drive 3 reported 100% SMART wear. Hot-swap the failed simulated drive and verify scrub completion.',
+    objectives: [
+      'Open the Data Center Simulator and inspect Rack D',
+      'Read telemetry logs for srv-backup-01',
+      'Trigger online drive replace and verify pool recovery',
+    ],
+    verificationSteps: [
+      'Drive status replaced to ONLINE',
+      'Run ZFS status check to confirm 0 checksum errors',
+    ],
+    hint: 'Select Rack D in the Data Center Simulator, inspect srv-backup-01, and click "Remediate Disk Failure".',
+    isCompleted: false,
+  },
+];
